@@ -1,0 +1,90 @@
+<html>
+  <head>
+    <title>My Wish List</title>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/styles.css" type="text/css">
+  </head>
+  <body>
+    <div class="container-fluid">
+      <nav class="navbar">
+        <div class="container-fluid">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/users/logoff"><span class="glyphicon glyphicon-log-out"></span> Logoff</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="col-sm-11 col-sm-offset-1">
+        <h1>Hello, {{ user['name'] }}</h1>
+      </div>
+      <div class="col-sm-8 col-sm-offset-1">
+        <h5>Your wish list:</h5>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Added by</th>
+                <th>Date Added</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in wishlist %}
+              <tr>
+                <td><a href="/items/show/{{ item['id'] }}">{{item['name']}}</a></td>
+                <td>{{item['created_by']}}</td>
+                <td>{{item['created_at']}}</td>
+                <td>
+                  {% if item['created_by'] == user['username'] %}
+                  <form action="/items/{{ item['id'] }}/delete" method='post'>
+                    <button type='submit' class='btn btn-link'>Delete</button>
+                  </form>
+                  {% else %}
+                  <form action="/wishlist/{{ item['id'] }}/remove" method='post'>
+                    <button type='submit' class='btn btn-link'>Remove from wishlist</button>
+                  </form>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+      </div>
+
+      <div class="col-sm-8 col-sm-offset-1">
+        <h5>Other users' wish list:</h5>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Added by</th>
+                <th>Date Added</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in otherlist %}
+              <tr>
+                <td><a href="/items/show/{{ item['id'] }}">{{item['name']}}</a></td>
+                <td>{{ item['created_by'] }}</td>
+                <td>{{ item['created_at'] }}</td>
+                <td>
+                  <form action="/wishlists/create/{{ item['id'] }} " method='post' >
+                    <button type='submit' class='btn btn-link'>Add to my wishlist</button>
+                  </form>
+              {% endfor %}
+
+            </tbody>
+          </table>
+      </div>
+
+      <div class="col-sm-8 col-sm-offset-1">
+        <form action="/items/add">
+          <button class='btn btn-link pull-right'>Add item</button>
+        </form>
+      </div>
+
+    </div>
+  </body>
+</html>

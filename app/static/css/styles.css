@@ -1,0 +1,11 @@
+* {
+  font-family: monaco;
+}
+
+.top {
+  margin-top: 25px;
+}
+
+table {
+  border: solid 1px lightgrey;
+}
