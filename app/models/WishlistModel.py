@@ -28,21 +28,15 @@ class WishlistModel(Model):
     def get_user_wishlist_items(self, user_id):
         data = { 'id' : user_id }
         query =  'SELECT items.id, items.name, items.created_by, items.created_at FROM items '
-        query += 'INNER JOIN wishlist ON items.id = wishlist.item_id '
-        query += 'INNER JOIN users ON wishlist.user_id = :id '
-        query += 'GROUP BY items.name'
+        query += 'INNER JOIN wishlist ON wishlist.item_id = items.id AND wishlist.user_id = :id'
         wishlist = self.db.query_db( query, data )
         return wishlist
 
     def get_other_wishlist_items(self, user_id):
         data = { 'id' : user_id }
         query =  'SELECT items.id, items.name, items.created_by, items.created_at FROM items '
-        query += 'INNER JOIN wishlist ON items.id = wishlist.item_id '
-        query += 'INNER JOIN users ON wishlist.user_id != :id '
-        query += 'WHERE items.id NOT IN( SELECT items.id FROM items '
-        query += 'INNER JOIN wishlist ON items.id = wishlist.item_id '
-        query += 'INNER JOIN users ON wishlist.user_id = :id) '
-        query += 'GROUP BY items.name'
+        query += 'LEFT JOIN wishlist ON wishlist.item_id = items.id AND wishlist.user_id = :id '
+        query += 'WHERE wishlist.id IS NULL'
 
 
         wishlist = self.db.query_db( query, data )
